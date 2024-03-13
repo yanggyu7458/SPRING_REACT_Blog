@@ -1,0 +1,649 @@
+1. SignIn (로그인) - POST /api/v1/auth/sign-in
+
+- request
+{
+    *email : String,
+    *password : String
+}
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success.",
+    token: "jwt...",
+    expiredDate: 123456789
+}
+
+실패
+
+- 필수 정보 미입력
+
+로그인 실패
+Http Status - 401 (Unauthorized)
+{
+    code : "SF"
+    message : "Sign In Failed"
+}
+
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+2. signUp (회원가입) - POST /api/v1/auth/sign-up
+
+- request
+{
+    *email: String
+    *password: String
+    *nickname: String
+    *telNumber: String
+    *address: String
+    addressDetail: String
+}
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+실패
+
+- 필수 정보 미입력 / 이메일 포멧 불일치 / 비밀번호 8자 미만 / 전화번호 포멧 불일치
+
+- 이메일 중복
+Http Status - 400 (Bad Request)
+{
+    code: "EE",
+    message: "Existed Email."
+}
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+3. weeklyTop3 (주간 상위 3 게시물 리스트) - GET /api/v1/board/top-3
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    top3List: boardListItem[]
+}
+
+boardListItem 
+{
+    boardNumber(구분자): int,
+    title: String,
+    content: String,
+    boardTitleImage: String,
+    favoriteCount: int,
+    commentCount: int,
+    viewCount: int,
+    writeDateTime: String,
+    writerNickname: String,
+    writerProfileImage: String
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+4. currentList (최신 게시물) - GET /api/v1/board/latest-list
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    currentList: boardListItem[]
+}
+
+boardListItem 
+{
+    boardNumber(구분자): int,
+    title: String,
+    content: String,
+    boardTitleImage: String,
+    favoriteCount: int,
+    commentCount: int,
+    viewCount: int,
+    writeDateTime: String,
+    writerNickname: String,
+    writerProfileImage: String
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+5. popularWordList (인기 검색어 리스트) - GET /api/v1/search/popular-list
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    popularWordList: String[]
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+6. SearchList (검색 게시물 리스트)
+GET /api/v1/board/search-list/{searchWord}
+
+GET /api/v1/board/search-list/{searchWord}/{preSearchWord}
+
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    searchList: boardListItem[]
+}
+
+boardListItem 
+{
+    boardNumber(구분자): int,
+    title: String,
+    content: String,
+    boardTitleImage: String,
+    favoriteCount: int,
+    commentCount: int,
+    viewCount: int,
+    writeDateTime: String,
+    writerNickname: String,
+    writerProfileImage: String
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+7. relativeWordList (관련 검색어 리스트) - GET /api/v1/search/{searchWord}/relation-list
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    relativeWordList: String[]
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+8. boardDetail (게시물 상세보기) - GET /api/v1/board/{boardNumber}
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    boardNumber(구분자): int,
+    title: String,
+    content: String,
+    boardImage: String,
+    writeDateTime: String,
+    writerEmail: String,
+    writerNickname: String,
+    writerProfileImage: String
+}
+
+실패
+- 존재하지 않는 게시물
+Http Status - 400 (Bad Request)
+{
+    code : "NB"
+    message : "No Existed Board Number"
+}
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+9. favoriteList (좋아요 리스트) - GET /api/v1/board/{boardNumber}/favorite-list
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    favoriteList: FavoriteListItem[]
+}
+FavoriteListItem {
+    email: string,
+    nickname: string,
+    profileImage: string
+}
+
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+10. putFavorite(좋아요 기능) - PUT /api/v1/board/{boardNumber}/favorite
+
+- request
+{
+    boardNumber: int
+}
+
+-response
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+11. commentList (댓글 리스트) - GET /api/v1/board/{boardNumber}/comment-list
+
+-response
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    commentList: CommentListItem[]
+}
+CommentListItem {
+    email: string,
+    nickname: string,
+    writeDateTime: string,
+    content: string
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+12. postCommtent(댓글 쓰기) - POST /api/v1/board/{boardNumber}/comment
+
+-request
+{
+    content: string
+}
+
+-response
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+실패
+- 존재하지 않는 게시물
+Http Status - 400 (Bad Request)
+{
+    code : "NB"
+    message : "No Existed Board Number"
+}
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+13. boardDelete(게시물 삭제) - DELETE /api/v1/board/{boardNumber}
+
+-response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+
+실패
+- 존재하지 않는 게시물
+Http Status - 400 (Bad Request)
+{
+    code : "NB"
+    message : "No Existed Board Number"
+}
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+
+- 권한 없음
+Http Status - 403 (Forbidden)
+{
+    code : "NP"
+    message : "No Permission"
+}
+
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+14. boardWrite(게시물 쓰기) - POST /api/v1/board
+
+- request
+
+{
+    *title: string,
+    *content: string,
+    boardImageList: string[]
+}
+
+-response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+
+실패
+
+- 존재하지 않는 게시물
+Http Status - 400 (Bad Request)
+{
+    code : "NB"
+    message : "No Existed Board Number"
+}
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+
+- 권한 없음
+Http Status - 403 (Forbidden)
+{
+    code : "NP"
+    message : "No Permission"
+}
+
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+===================================================
+15. boardUpate(게시물 수정) - PATCH /api/v1/board/{boardNumber}
+
+- request
+
+{
+    *title: string,
+    *content: string,
+    boardImageList: string[]
+}
+
+-response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+실패
+- 존재하지 않는 게시물
+Http Status - 400 (Bad Request)
+{
+    code : "NB"
+    message : "No Existed Board Number"
+}
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+
+- 권한 없음
+Http Status - 403 (Forbidden)
+{
+    code : "NP"
+    message : "No Permission"
+}
+
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+16. getUser (유저 정보 불러오기) - GET /api/v1/user/{email}
+
+- response
+
+성공
+
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success.",
+    email: string,
+    nickname: string,
+    profileImage: string
+}
+
+실패
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+17. userBoardList(특정유저 게시글 리스트) - GET /api/v1/board/user-board-list/{email}
+
+- response
+
+성공
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+    boardList: boardListItem[]
+}
+
+boardListItem 
+{
+    boardNumber(구분자): int,
+    title: String,
+    content: String,
+    boardTitleImage: String,
+    favoriteCount: int,
+    commentCount: int,
+    viewCount: int,
+    writeDateTime: String,
+    writerNickname: String,
+    writerProfileImage: String
+}
+
+실패
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+
+===================================================
+18. patchNickname (닉네임 수정) - PATCH /api/v1/user/nickname
+
+- request
+{
+    nickname: string,
+}
+
+- response
+
+성공
+
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+실패
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+===================================================
+19. patchProfileImage (프로필 이미지 수정) - PATCH /api/v1/user/profile-image
+
+- request
+{
+    profileImage: string,
+}
+
+- response
+
+성공
+
+Http Status - 200 (OK)
+{
+    code : "SU",
+    message : "Success."
+}
+
+실패
+
+- 존재하지 않는 유저
+Http Status - 400 (Bad Request)
+{
+    code : "NU"
+    message : "No Existed User"
+}
+- 데이터 베이스 에러
+Http Status - 500 (Internal Server Error)
+{
+    code : "DBE"
+    message : "Database Error"
+}
+
+
+===================================================
+20. fileUpload (파일 업로드)
+===================================================
+21. getFile(파일 불러오기)
+===================================================
