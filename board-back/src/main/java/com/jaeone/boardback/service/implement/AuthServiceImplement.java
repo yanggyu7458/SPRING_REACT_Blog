@@ -5,10 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.jaeone.boardback.dto.request.auth.SignInRequestDto;
 import com.jaeone.boardback.dto.request.auth.SignUpRequestDto;
 import com.jaeone.boardback.dto.response.ResponseDto;
+import com.jaeone.boardback.dto.response.auth.SignInResponseDto;
 import com.jaeone.boardback.dto.response.auth.SignUpResponseDto;
 import com.jaeone.boardback.entity.UserEntity;
+import com.jaeone.boardback.provider.JwtProvider;
 import com.jaeone.boardback.repository.UserRepository;
 import com.jaeone.boardback.service.AuthService;
 
@@ -19,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImplement implements AuthService{
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     
     // public AuthServiceImplement(UserRepository userRepository) {
@@ -57,6 +62,29 @@ public class AuthServiceImplement implements AuthService{
         }
 
         return SignUpResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+        String token = null;
+        try {
+            String email = dto.getEmail();
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if(userEntity == null) return SignInResponseDto.signInFailed();
+
+            String password = dto.getPassword();
+            String encodedPassword = userEntity.getPassword();
+            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+            if(!isMatched) return SignInResponseDto.signInFailed();
+
+            token = jwtProvider.create(email);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return SignInResponseDto.success(token);
     }
     
 }
