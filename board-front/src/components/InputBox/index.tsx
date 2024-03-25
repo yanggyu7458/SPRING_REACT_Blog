@@ -10,7 +10,7 @@ interface Props {
     value: string;
     setValue: Dispatch<SetStateAction<string>>;
 
-    icon?: string; //필수가 아닌 선택
+    icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon'; //필수가 아닌 선택
     onButtonClick?: () => void;
 
     message?: string;
@@ -20,7 +20,7 @@ interface Props {
 }
 //          component: Input Box 컴포넌트           //
 const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref)  => {
-    //          render: Input Box 컴포넌트             //
+    
 
     //          state: properties           //
     const { label, type, error, placeholder, value, icon, message } = props;
@@ -37,13 +37,14 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref)  => {
         if(!onKeyDown) return;
         onKeyDown(event);
     };
+    //          render: Input Box 컴포넌트             //
     return (
         <div className='inputbox'>
             <div className='inputbox-label'>{'label'}</div>
             <div className={error ? 'inputbox-container-error' : 'inputbox-container'}>
                 <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>
                 {onButtonClick !== undefined && (
-                    <div className='icon-button'>
+                    <div className='icon-button' onClick={onButtonClick}>
                         {icon !== undefined && (
                             <div className={`icon ${icon}`}></div>
                         )}
