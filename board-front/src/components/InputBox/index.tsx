@@ -34,7 +34,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref)  => {
     //          render: Input Box 컴포넌트             //
     return (
         <div className='inputbox'>
-            <div className='inputbox-label'>{'label'}</div>
+            <div className='inputbox-label'>{label}</div>
             <div className={error ? 'inputbox-container-error' : 'inputbox-container'}>
                 <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDownHandler}/>
                 {onButtonClick !== undefined && (
