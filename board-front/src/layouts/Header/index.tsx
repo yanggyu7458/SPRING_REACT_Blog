@@ -116,6 +116,7 @@ export default function Header() {
     //            event handler: 마이페이지 버튼 클릭 이벤트 처리 함수            //
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
+      setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
       navigate(MAIN_PATH());
     }
     //            event handler: 로그인 버튼 클릭 이벤트 처리 함수            //
@@ -152,7 +153,7 @@ export default function Header() {
     return <div className='disable-button'>{'업로드'}</div>; 
     
   }
-  
+
   //            effect: path가 변경될 때 마다 실행 될 함수            //
   useEffect(() => {
 
@@ -170,7 +171,12 @@ export default function Header() {
     setBoardUpatePage(isBoardUpatePage);
     const isUserPage = pathname.startsWith(USER_PATH(''));
     setUserPage(isUserPage);
-  }, [pathname])
+  }, [pathname]);
+
+  //            effect: login user가 변경될 때 마다 실행 될 함수            //
+  useEffect(() => {
+    setLogin(loginUser !== null);
+  }, [loginUser]);
 
   //            render: 헤더 레이아웃 랜더링            //
   return (
